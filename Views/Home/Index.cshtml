@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="sidenav" id="left_sidenav">
+    <p>Put left sidebar here</p>
+    <button onclick="hideNav('left_sidenav')">Test Hide</button>
+</div>
+
+<div class="main text-center">
+
+    <h1 class="display-4">Welcome tool</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    
+</div>
+
+<div class="sidenav-right" id="right_sidenav">
+    <p>haha</p>
+    <button onclick="hideNav('right_sidenav')"> Test right hide</button>
+</div>
+
+<script>
+    const hiddenNavWidth = 40;
+    const expandedNavWidth = 160;
+    function hideNav(nav) {
+        
+        //$('#' + nav).hide();
+        var navBar = $('#' + nav);
+        if (navBar.width() == expandedNavWidth) {
+            navBar.width(hiddenNavWidth);
+        }
+        else {
+            navBar.width(expandedNavWidth);
+        }
+        
+
+    }
+
+
+</script>
