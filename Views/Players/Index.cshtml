@@ -44,34 +44,116 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Players) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BirthDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary)
-            </td>
-            <td>
-                <form>
-                    <button class="btn-primary btn" asp-action="Edit" asp-route-id="@item.Id">Edit</button> |
-                    <button class="btn-primary btn" asp-action="Details" asp-route-id="@item.Id">Details</button> |
-                    <button class="btn-primary btn" asp-action="Delete" asp-route-id="@item.Id">Delete</button> 
-                </form>
-                @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Players)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Team)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    <form>
+                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-action="Edit" asp-route-id="@item.Id" onclick="getPlayerData(@item.Id)">Edit</button> |
+                        <button class="btn-primary btn" asp-action="Details" asp-route-id="@item.Id">Details</button> |
+                        <button class="btn-primary btn" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                    </form>
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<!-- Button trigger modal -->
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>*@
+@{
+    int index = 0;
+
+}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Players[index].Id" />
+                            <div id="playerName" class="form-group">
+                                <h1>cool</h1>
+                                <label id="awe" class="control-label"></label>
+                                <input class="form-control" />
+                                <span asp-validation-for="Players[index].Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Players[index].Rating" class="control-label"></label>
+                                <input asp-for="Players[index].Rating" class="form-control" />
+                                <span asp-validation-for="Players[index].Rating" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Players[index].BirthDate" class="control-label"></label>
+                                <input asp-for="Players[index].BirthDate" class="form-control" />
+                                <span asp-validation-for="Players[index].BirthDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Players[index].Team" class="control-label"></label>
+                                <input asp-for="Players[index].Team" class="form-control" />
+                                <span asp-validation-for="Players[index].Team" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Players[index].Salary" class="control-label"></label>
+                                <input asp-for="Players[index].Salary" class="form-control" />
+                                <span asp-validation-for="Players[index].Salary" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var players = @Html.Raw(Json.Serialize(Model.Players))
+        function getPlayerData(id) {
+            console.log(id)
+            player = players.find(x => x.id == id)
+            console.log(player)
+            console.log($('#playerName'))
+            var playerLabel = $("#playerName h1")
+            var playerValue = $('#playerName input')
+            $('#playerName label').text(player.name)
+            console.log($('#playerName > label').length)
+            //playerLabel.hide()
+            playerValue.hide()
+            console.log(playerLabel.length)
+        }
+</script>
