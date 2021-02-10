@@ -4,8 +4,13 @@
 
 
 <div class="sidenav" id="left_sidenav">
-    <p>Put left sidebar here</p>
-    <button onclick="hideNav('left_sidenav')">Test Hide</button>
+    <a class="expandbtn" onclick="hideNav('left_sidenav')">&#9776;</a>
+    <a class="closebtn" href="javascript:void(0)" onclick="hideNav('left_sidenav')">&#10005;</a>
+    <a href="javascript:void(0)">Nuts</a>
+    <a href="javascript:void(0)">Bits</a>
+    <a href="javascript:void(0)">Bobs</a>
+    <a href="javascript:void(0)">Things</a>
+    @*<button class="btn btn-primary" onclick="hideNav('left_sidenav')">Test Hide</button>*@
 </div>
 
 <div class="main text-center">
@@ -15,25 +20,37 @@
     
 </div>
 
-<div class="sidenav-right" id="right_sidenav">
+@*<div class="sidenav-right" id="right_sidenav">
     <p>haha</p>
     <button onclick="hideNav('right_sidenav')"> Test right hide</button>
-</div>
+</div>*@
 
 <script>
     const hiddenNavWidth = 40;
     const expandedNavWidth = 160;
     function hideNav(nav) {
-        
+        var navStr = '#' + nav;
         //$('#' + nav).hide();
         var navBar = $('#' + nav);
+
+        var closeBtn = $(navStr + ' .closebtn');
+        var expandBtn = $(navStr + ' .expandbtn');
+        var links = $(navStr + ' a')
+        console.log(closeBtn);
         if (navBar.width() == expandedNavWidth) {
             navBar.width(hiddenNavWidth);
+            closeBtn.hide();
+            links.hide();
+            expandBtn.show();
         }
         else {
             navBar.width(expandedNavWidth);
+            closeBtn.show();
+            links.show();
+            links.css('display', 'block')
+           // expandBtn.hide()
         }
-        
+        expandBtn.toggleClass("change")
 
     }
 

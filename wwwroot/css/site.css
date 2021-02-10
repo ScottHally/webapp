@@ -77,7 +77,7 @@ body {
 /* The sidebar menu */
 .sidenav {
     /*height: 100%;*/ /* Full-height: remove this if you want "auto" height */
-    width: 160px; /* Set the width of the sidebar */
+    width: 40px; /* Set the width of the sidebar */
     position: fixed; /* Fixed Sidebar (stay in place on scroll) */
     z-index: 1; /* Stay on top */
     top: 57px; /* Stay at the top */
@@ -87,6 +87,30 @@ body {
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 20px;
     color: white;
+    transition: 0.5s;
+}
+
+.sidenav .closebtn {
+    top: 0;
+    right: 25px;
+    position: absolute;
+    display: none;
+}
+
+/*remember the padding format for one line is top right bottom left (clockwise)*/
+.sidenav .expandbtn {
+    position: absolute;
+    left: 0;
+    padding: 0 0 0 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    display: block;
+}
+
+.change.expandbtn {
+    opacity: 0;
+    transform: rotate(90deg);
+    /*color: black;*/
 }
 
 .sidenav-right {
@@ -101,6 +125,7 @@ body {
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 20px;
     color: white;
+    transition: 0.5s;
 }
 
     /* The navigation menu links */
@@ -109,7 +134,7 @@ body {
         text-decoration: none;
         font-size: 25px;
         color: #818181;
-        display: block;
+        display: none;
     }
 
         /* When you mouse over the navigation links, change their color */
