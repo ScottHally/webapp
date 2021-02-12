@@ -19,6 +19,15 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public string Test(int id, Player player)
+        {
+
+            return "Hello... " + id + " " + player.Name;
+        }
+
+
         // GET: Players
         public async Task<IActionResult> Index(string playerTeam, string searchString)
         {
@@ -116,6 +125,38 @@ namespace WebApplication1.Controllers
             if (id != player.Id)
             {
                 return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(player);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PlayerExists(player.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitEdit(int id, Player player)
+        {
+            if (id != player.Id)
+            {
+                return NotFound(); ;
             }
 
             if (ModelState.IsValid)

@@ -10,7 +10,8 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-
+@*the tutorial wanted us to do this... why make a seperate model for
+    *@
 <form asp-controller="Players" asp-action="Index" method="get">
     <p>
         <select asp-for="PlayerTeam" asp-items="Model.Teams">
@@ -26,19 +27,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Players[0].Name)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Players[0].BirthDate)
+                @Html.DisplayNameFor(model => model.BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Players[0].Team)
+                @Html.DisplayNameFor(model => model.Team)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Players[0].Salary)
+                @Html.DisplayNameFor(model => model.Salary)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Players[0].Rating)
+                @Html.DisplayNameFor(model => model.Rating)
             </th>
             <th></th>
         </tr>
@@ -64,7 +65,8 @@
                 </td>
                 <td>
                     <form>
-                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-action="Edit" asp-route-id="@item.Id" onclick="getPlayerData(@item.Id)">Edit</button> |
+                        <a asp-action="Edit" asp-route-id="8">Edit</a>
+                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id)">Edit</button> |
                         <button class="btn-primary btn" asp-action="Details" asp-route-id="@item.Id">Details</button> |
                         <button class="btn-primary btn" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
                     </form>
@@ -78,53 +80,51 @@
 </table>
 <!-- Button trigger modal -->
 @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-</button>*@
-@{
-    int index = 0;
+        Launch demo modal
+    </button>*@
 
-}
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Player Info</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <form asp-action="Edit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" asp-for="Players[index].Id" />
+                            <input id="playerID" type="hidden" asp-for="Id"/>
                             <div id="playerName" class="form-group">
                                 <h1>cool</h1>
-                                <label id="awe" class="control-label"></label>
-                                <input class="form-control" />
-                                <span asp-validation-for="Players[index].Name" class="text-danger"></span>
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Players[index].Rating" class="control-label"></label>
-                                <input asp-for="Players[index].Rating" class="form-control" />
-                                <span asp-validation-for="Players[index].Rating" class="text-danger"></span>
+                            <div id="playerRating" class="form-group">
+                                <label asp-for="Rating" class="control-label"></label>
+                                <input asp-for="Rating" class="form-control" />
+                                <span asp-validation-for="Rating" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Players[index].BirthDate" class="control-label"></label>
-                                <input asp-for="Players[index].BirthDate" class="form-control" />
-                                <span asp-validation-for="Players[index].BirthDate" class="text-danger"></span>
+                            <div id="playerbday" class="form-group">
+                                <label asp-for="BirthDate" class="control-label"></label>
+                                @*added type = date to ensure dynamic control, no reason for this not to be included...*@
+                                <input type="date" asp-for="BirthDate" class="form-control" />
+                                <span asp-validation-for="BirthDate" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Players[index].Team" class="control-label"></label>
-                                <input asp-for="Players[index].Team" class="form-control" />
-                                <span asp-validation-for="Players[index].Team" class="text-danger"></span>
+                            <div id="playerteam" class="form-group">
+                                <label asp-for="Team" class="control-label"></label>
+                                <input asp-for="Team" class="form-control" />
+                                <span asp-validation-for="Team" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Players[index].Salary" class="control-label"></label>
-                                <input asp-for="Players[index].Salary" class="form-control" />
-                                <span asp-validation-for="Players[index].Salary" class="text-danger"></span>
+                            <div id="playerSalary" class="form-group">
+                                <label asp-for="Salary" class="control-label"></label>
+                                <input asp-for="Salary" class="form-control" />
+                                <span asp-validation-for="Salary" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -140,20 +140,86 @@
         </div>
     </div>
 </div>
-
 <script>
+
+
     var players = @Html.Raw(Json.Serialize(Model.Players))
+    var currId = -1;
+    var pData = {};
+        // need to generalize this ASAP, style of coding must be adopted early
+        // how are you gonna handle another field being added? keep growing the method? not a great workflow
         function getPlayerData(id) {
             console.log(id)
-            player = players.find(x => x.id == id)
+            var player = players.find(x => x.id == id)
             console.log(player)
-            console.log($('#playerName'))
-            var playerLabel = $("#playerName h1")
-            var playerValue = $('#playerName input')
-            $('#playerName label').text(player.name)
-            console.log($('#playerName > label').length)
-            //playerLabel.hide()
-            playerValue.hide()
-            console.log(playerLabel.length)
-        }
+            var playerID = $("#playerID")
+            var playerLabel = $("#playerName > label")
+            var playerName = $('#playerName > input')
+            var fRating = $('#playerRating > input')
+            var fBday = $('#playerbday > input')
+            var fteam = $('#playerteam > input')
+            var fSalary = $('#playerSalary > input')
+
+            var playerRating = player.rating;
+            var playerBday = new Date(player.birthDate)
+            var playerTeam = player.team
+            var playerSalary = player.salary
+            var bdaystring = playerBday.toISOString().slice(0,10)
+
+
+            playerID.val(id)
+            playerName.val(player.name)
+            fRating.val(playerRating)
+            fBday.val(bdaystring)
+            console.log(bdaystring)
+            fteam.val(playerTeam)
+            fSalary.val(playerSalary)
+            
+            pData.id = id;
+            pData.name = player.name;
+            pData.Rating = playerRating;
+            pData.birthDate = bdaystring;
+            pData.team = playerTeam;
+            pData.salary = playerSalary;
+
+            console.log(pData)
+            currId = id;
+    }
+
+    function getEditData(id) {
+        var playerName = $('#playerName > input')
+        var fRating = $('#playerRating > input')
+        var fBday = $('#playerbday > input')
+        var fteam = $('#playerteam > input')
+        var fSalary = $('#playerSalary > input')
+
+        pData.name = playerName.val();
+        pData.Rating = fRating.val();
+        pData.birthDate = fBday.val();
+        pData.team = fteam.val();
+        pData.salary = fSalary.val();
+
+    }
+
+    function submitEdit() {
+
+        getEditData(currId)
+        // do people actually like the ajax syntax???
+
+        console.log("pData object right before AJAX call: ")
+        console.log(pData)
+        $.ajax({
+            url: "@Url.Action("SubmitEdit", "Players")",
+            type: 'post',
+            data: {id: pData.id, player: pData},
+            success: function (result) {
+                console.log('success')
+            },
+            error: function (result) {
+                console.log(result)
+            }
+        })
+
+        return false;
+    }
 </script>
