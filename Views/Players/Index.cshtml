@@ -27,19 +27,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Player.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirthDate)
+                @Html.DisplayNameFor(model => model.Player.BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Team)
+                @Html.DisplayNameFor(model => model.Player.Team)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Salary)
+                @Html.DisplayNameFor(model => model.Player.Salary)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                @Html.DisplayNameFor(model => model.Player.Rating)
             </th>
             <th></th>
         </tr>
@@ -98,33 +98,33 @@
                     <div class="col-md-6">
                         <form asp-action="Edit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input id="playerID" type="hidden" asp-for="Id"/>
+                            <input id="playerID" type="hidden" asp-for="Player.Id"/>
                             <div id="playerName" class="form-group">
                                 <h1>cool</h1>
-                                <label asp-for="Name" class="control-label"></label>
-                                <input asp-for="Name" class="form-control" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
+                                <label asp-for="Player.Name" class="control-label"></label>
+                                <input asp-for="Player.Name" class="form-control" />
+                                <span asp-validation-for="Player.Name" class="text-danger"></span>
                             </div>
                             <div id="playerRating" class="form-group">
-                                <label asp-for="Rating" class="control-label"></label>
-                                <input asp-for="Rating" class="form-control" />
-                                <span asp-validation-for="Rating" class="text-danger"></span>
+                                <label asp-for="Player.Rating" class="control-label"></label>
+                                <input asp-for="Player.Rating" class="form-control" />
+                                <span asp-validation-for="Player.Rating" class="text-danger"></span>
                             </div>
                             <div id="playerbday" class="form-group">
-                                <label asp-for="BirthDate" class="control-label"></label>
+                                <label asp-for="Player.BirthDate" class="control-label"></label>
                                 @*added type = date to ensure dynamic control, no reason for this not to be included...*@
-                                <input type="date" asp-for="BirthDate" class="form-control" />
-                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                <input type="date" asp-for="Player.BirthDate" class="form-control" />
+                                <span asp-validation-for="Player.BirthDate" class="text-danger"></span>
                             </div>
                             <div id="playerteam" class="form-group">
-                                <label asp-for="Team" class="control-label"></label>
-                                <input asp-for="Team" class="form-control" />
-                                <span asp-validation-for="Team" class="text-danger"></span>
+                                <label asp-for="Player.Team" class="control-label"></label>
+                                <input asp-for="Player.Team" class="form-control" />
+                                <span asp-validation-for="Player.Team" class="text-danger"></span>
                             </div>
                             <div id="playerSalary" class="form-group">
-                                <label asp-for="Salary" class="control-label"></label>
-                                <input asp-for="Salary" class="form-control" />
-                                <span asp-validation-for="Salary" class="text-danger"></span>
+                                <label asp-for="Player.Salary" class="control-label"></label>
+                                <input asp-for="Player.Salary" class="form-control" />
+                                <span asp-validation-for="Player.Salary" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <input type="submit" value="Save" class="btn btn-primary" />

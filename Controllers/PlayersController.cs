@@ -122,7 +122,21 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,BirthDate,Team,Salary,Rating")] Player player)
         {
-            if (id != player.Id)
+            // this doesn't work if we modify the routing as we have.
+            // we have no route id
+            //if (id != player.Id)
+            //{
+            //    return NotFound();
+            //}
+
+            var players = from p in _context.Player select p;
+            var pId = players.Where(p => p.Id == player.Id);
+            
+            if(players.Count() == 0)
+            {
+                return NotFound();
+            }
+            else if(pId.Count() == 0)
             {
                 return NotFound();
             }
