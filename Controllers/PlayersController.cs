@@ -19,6 +19,15 @@ namespace WebApplication1.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public string Test(int id, Player player)
+        {
+
+            return "Hello... " + id + " " + player.Name;
+        }
+
+
         // GET: Players
         public async Task<IActionResult> Index(string playerTeam, string searchString)
         {
@@ -113,9 +122,55 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,BirthDate,Team,Salary,Rating")] Player player)
         {
-            if (id != player.Id)
+            // this doesn't work if we modify the routing as we have.
+            // we have no route id
+            //if (id != player.Id)
+            //{
+            //    return NotFound();
+            //}
+
+            var players = from p in _context.Player select p;
+            var pId = players.Where(p => p.Id == player.Id);
+            
+            if(players.Count() == 0)
             {
                 return NotFound();
+            }
+            else if(pId.Count() == 0)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(player);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PlayerExists(player.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitEdit(int id, Player player)
+        {
+            if (id != player.Id)
+            {
+                return NotFound(); ;
             }
 
             if (ModelState.IsValid)

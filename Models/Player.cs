@@ -11,8 +11,8 @@ namespace WebApplication1.Models
     {
         public int Id { get; set; }
 
-        [StringLength(60, MinimumLength = 3)]
         [Required]
+        [StringLength(60, MinimumLength = 3)]
         public string Name { get; set; }
 
         [Display(Name = "Birth Date")]
