@@ -11,6 +11,14 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+
+
+#detailsForm dd {
+    text-align: left;
+    color: blue;
+    justify-self:end;
+}
+
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;

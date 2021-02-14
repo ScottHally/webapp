@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int index = 0;
+    
 }
 
 <h1>Index</h1>
@@ -11,7 +14,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 @*the tutorial wanted us to do this... why make a seperate model for
-    *@
+*@
 <form asp-controller="Players" asp-action="Index" method="get">
     <p>
         <select asp-for="PlayerTeam" asp-items="Model.Teams">
@@ -47,6 +50,7 @@
     <tbody>
         @foreach (var item in Model.Players)
         {
+
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -65,9 +69,8 @@
                 </td>
                 <td>
                     <form>
-                        <a asp-action="Edit" asp-route-id="8">Edit</a>
                         <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id)">Edit</button> |
-                        <button class="btn-primary btn" asp-action="Details" asp-route-id="@item.Id">Details</button> |
+                        <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#detailsModal" asp-route-id="@item.Id" onclick="getItemIndex(@index)">Details</button> |
                         <button class="btn-primary btn" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
                     </form>
                     @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -75,7 +78,9 @@
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
                 </td>
             </tr>
+            index++;
         }
+       @{index--; }
     </tbody>
 </table>
 <!-- Button trigger modal -->
@@ -93,12 +98,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <form asp-action="Edit">
+            <form asp-action="Edit">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input id="playerID" type="hidden" asp-for="Player.Id"/>
+                            <input id="playerID" type="hidden" asp-for="Player.Id" />
                             <div id="playerName" class="form-group">
                                 <h1>cool</h1>
                                 <label asp-for="Player.Name" class="control-label"></label>
@@ -127,19 +133,84 @@
                                 <span asp-validation-for="Player.Salary" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-primary" />
+                                @*<input type="submit" value="Save" class="btn btn-primary" />*@
                             </div>
-                        </form>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Player Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div>
+                        <div>
+                            <h4 style="margin-left: 15px;">Player</h4>
+                            <hr />
+                            <div class="container">
+                                <dl id="detailsForm" class="row">
+                                    <div>
+
+                                    </div>
+                                    <dt class="col-lg-3">
+                                        @Html.DisplayNameFor(model => model.Player.Name)
+                                    </dt>
+                                    <dd class="col-lg-9">
+                                        @Html.DisplayFor(model => model.Players[index].Name)
+                                    </dd>
+                                    <dt class="col-lg-3">
+                                        @Html.DisplayNameFor(model => model.Player.Rating)
+                                    </dt>
+                                    <dd class="col-lg-9">
+                                        @Html.DisplayFor(model => model.Player.Rating)
+                                    </dd>
+                                    <dt class="col-lg-3">
+                                        @Html.DisplayNameFor(model => model.Player.BirthDate)
+                                    </dt>
+                                    <dd class="col-lg-9">
+                                        @Html.DisplayFor(model => model.Player.BirthDate)
+                                    </dd>
+                                    <dt class="col-lg-3">
+                                        @Html.DisplayNameFor(model => model.Player.Team)
+                                    </dt>
+                                    <dd class="col-lg-9">
+                                        @Html.DisplayFor(model => model.Player.Team)
+                                    </dd>
+                                    <dt class="col-lg-3">
+                                        @Html.DisplayNameFor(model => model.Player.Salary)
+                                    </dt>
+                                    <dd class="col-lg-9">
+                                        @Html.DisplayFor(model => model.Player.Salary)
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+
 <script>
 
 
@@ -174,7 +245,7 @@
             console.log(bdaystring)
             fteam.val(playerTeam)
             fSalary.val(playerSalary)
-            
+
             pData.id = id;
             pData.name = player.name;
             pData.Rating = playerRating;
@@ -184,6 +255,24 @@
 
             console.log(pData)
             currId = id;
+    }
+
+    function getItemIndex(id) {
+        @{ 
+            index = 0;
+        }
+        var detailsForm = $('#detailsForm');
+        var detailsDD = $('#detailsForm > dd');
+
+        detailsDD[0].innerHTML = players[id].name;
+        detailsDD[1].innerHTML = players[id].rating;
+        detailsDD[2].innerHTML = players[id].birthDate.slice(0,10);
+        detailsDD[3].innerHTML = players[id].team;
+        detailsDD[4].innerHTML = players[id].salary;
+        //detailsDD[5].innerHTML = players[id].name;
+      
+
+        console.log(id);
     }
 
     function getEditData(id) {
