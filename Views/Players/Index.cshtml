@@ -5,13 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     int index = 0;
-    
+
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @* The syntax for toggling modals is beyond terrible but what else do you expect from 
+        bootstrap? *@
+    <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal">Create New</button>
 </p>
 @*the tutorial wanted us to do this... why make a seperate model for
 *@
@@ -69,9 +71,9 @@
                 </td>
                 <td>
                     <form>
-                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id)">Edit</button> |
-                        <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#detailsModal" asp-route-id="@item.Id" onclick="getItemIndex(@index)">Details</button> |
-                        <button class="btn-primary btn" asp-action="Delete" asp-route-id="@item.Id">Delete</button>
+                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id,'')">Edit</button> |
+                        <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#detailsModal" asp-route-id="@item.Id" onclick="getItemIndex(@index, '')">Details</button> |
+                        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn-primary btn" asp-route-id="@item.Id" onclick="fillDelPid(@item.Id)">Delete</button>
                     </form>
                     @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -80,13 +82,71 @@
             </tr>
             index++;
         }
-       @{index--; }
+        @{index--; }
     </tbody>
 </table>
 <!-- Button trigger modal -->
 @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         Launch demo modal
     </button>*@
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Create New Player</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div id="playerNameCreate" class="form-group">
+                                <label asp-for="Player.Name" class="control-label"></label>
+                                <input asp-for="Player.Name" class="form-control" />
+                                <span asp-validation-for="Player.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Player.Rating" class="control-label"></label>
+                                <input asp-for="Player.Rating" class="form-control" />
+                                <span asp-validation-for="Player.Rating" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Player.BirthDate" class="control-label"></label>
+                                @*added type = date to ensure dynamic control, no reason for this not to be included...*@
+                                <input type="date" asp-for="Player.BirthDate" class="form-control" />
+                                <span asp-validation-for="Player.BirthDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Player.Team" class="control-label"></label>
+                                <input asp-for="Player.Team" class="form-control" />
+                                <span asp-validation-for="Player.Team" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Player.Salary" class="control-label"></label>
+                                <input asp-for="Player.Salary" class="form-control" />
+                                <span asp-validation-for="Player.Salary" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                @*<input type="submit" value="Save" class="btn btn-primary" />*@
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -106,7 +166,6 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input id="playerID" type="hidden" asp-for="Player.Id" />
                             <div id="playerName" class="form-group">
-                                <h1>cool</h1>
                                 <label asp-for="Player.Name" class="control-label"></label>
                                 <input asp-for="Player.Name" class="form-control" />
                                 <span asp-validation-for="Player.Name" class="text-danger"></span>
@@ -140,6 +199,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
@@ -161,8 +221,7 @@
                 <div class="row">
                     <div>
                         <div>
-                            <h4 style="margin-left: 15px;">Player</h4>
-                            <hr />
+                            
                             <div class="container">
                                 <dl id="detailsForm" class="row">
                                     <div>
@@ -172,7 +231,7 @@
                                         @Html.DisplayNameFor(model => model.Player.Name)
                                     </dt>
                                     <dd class="col-lg-9">
-                                        @Html.DisplayFor(model => model.Players[index].Name)
+                                        @Html.DisplayFor(model => model.Player.Name)
                                     </dd>
                                     <dt class="col-lg-3">
                                         @Html.DisplayNameFor(model => model.Player.Rating)
@@ -211,6 +270,66 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Player</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Delete this player?</p>
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Player.Id" id="delPlayerId" />
+
+                    <div class="container">
+                        <dl id="detailsFormDelete" class="row">
+                            <div>
+
+                            </div>
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Player.Name)
+                            </dt>
+                            <dd class="col-lg-9">
+                                @Html.DisplayFor(model => model.Player.Name)
+                            </dd>
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Player.Rating)
+                            </dt>
+                            <dd class="col-lg-9">
+                                @Html.DisplayFor(model => model.Player.Rating)
+                            </dd>
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Player.BirthDate)
+                            </dt>
+                            <dd class="col-lg-9">
+                                @Html.DisplayFor(model => model.Player.BirthDate)
+                            </dd>
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Player.Team)
+                            </dt>
+                            <dd class="col-lg-9">
+                                @Html.DisplayFor(model => model.Player.Team)
+                            </dd>
+                            <dt class="col-lg-3">
+                                @Html.DisplayNameFor(model => model.Player.Salary)
+                            </dt>
+                            <dd class="col-lg-9">
+                                @Html.DisplayFor(model => model.Player.Salary)
+                            </dd>
+                        </dl>
+                    </div>
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 
 
@@ -219,17 +338,18 @@
     var pData = {};
         // need to generalize this ASAP, style of coding must be adopted early
         // how are you gonna handle another field being added? keep growing the method? not a great workflow
-        function getPlayerData(id) {
+        function getPlayerData(id,su) {
             console.log(id)
             var player = players.find(x => x.id == id)
+            
             console.log(player)
-            var playerID = $("#playerID")
-            var playerLabel = $("#playerName > label")
-            var playerName = $('#playerName > input')
-            var fRating = $('#playerRating > input')
-            var fBday = $('#playerbday > input')
-            var fteam = $('#playerteam > input')
-            var fSalary = $('#playerSalary > input')
+            var playerID = $("#playerID" + su)
+            var playerLabel = $("#playerName" + su +" > label")
+            var playerName = $('#playerName' + su + ' > input')
+            var fRating = $('#playerRating' + su + ' > input')
+            var fBday = $('#playerbday' + su + ' > input')
+            var fteam = $('#playerteam' + su + ' > input')
+            var fSalary = $('#playerSalary' + su + ' > input')
 
             var playerRating = player.rating;
             var playerBday = new Date(player.birthDate)
@@ -246,31 +366,42 @@
             fteam.val(playerTeam)
             fSalary.val(playerSalary)
 
-            pData.id = id;
-            pData.name = player.name;
-            pData.Rating = playerRating;
-            pData.birthDate = bdaystring;
-            pData.team = playerTeam;
-            pData.salary = playerSalary;
+            //pData.id = id;
+            //pData.name = player.name;
+            //pData.Rating = playerRating;
+            //pData.birthDate = bdaystring;
+            //pData.team = playerTeam;
+            //pData.salary = playerSalary;
 
             console.log(pData)
             currId = id;
     }
 
-    function getItemIndex(id) {
-        @{ 
+    function fillDelPid(id) {
+        var fDelPid = $("#delPlayerId");
+
+        fDelPid.val(id);
+        console.log('delete id : ' + id);
+
+        var index = players.findIndex(x => x.id == id);
+        getItemIndex(index, 'Delete');
+    }
+
+    function getItemIndex(id, form) {
+        @{
             index = 0;
         }
-        var detailsForm = $('#detailsForm');
-        var detailsDD = $('#detailsForm > dd');
-
+        var formStr = "#detailsForm" + form;
+        var detailsForm = $(formStr);
+        var detailsDD = $(formStr + ' > dd');
+        console.log("name of form: " + formStr);
         detailsDD[0].innerHTML = players[id].name;
         detailsDD[1].innerHTML = players[id].rating;
         detailsDD[2].innerHTML = players[id].birthDate.slice(0,10);
         detailsDD[3].innerHTML = players[id].team;
         detailsDD[4].innerHTML = players[id].salary;
         //detailsDD[5].innerHTML = players[id].name;
-      
+
 
         console.log(id);
     }
