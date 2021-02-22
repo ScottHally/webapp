@@ -3,12 +3,28 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
+    var leagues = ViewData["Leagues"] as List<League>;
     int index = 0;
 
 }
 
-<h1>Index</h1>
+
+
+<div class="sidenav" id="left_sidenav">
+    <a class="expandbtn" onclick="hideNav('left_sidenav')">&#9776;</a>
+    <a class="closebtn" href="javascript:void(0)" onclick="hideNav('left_sidenav')">&#10005;</a>
+    @foreach(var item in leagues)
+    {
+        <a asp-controller="Players" asp-action="Index" asp-route-id="@item.LeagueID">
+            @Html.DisplayFor(modelItem => item.Name)
+        </a>
+    }
+    @*<a asp-controller="Players" asp-action="Index" asp-route-id="1">NHL</a>
+    <a asp-controller="Players" asp-action="Index" asp-route-id="2">NBA</a>
+    <a asp-controller="Players" asp-action="Index" asp-route-id="3">MLB</a>
+    <a asp-controller="Players" asp-action="Index" asp-route-id="4">NFL</a>*@
+    @*<button class="btn btn-primary" onclick="hideNav('left_sidenav')">Test Hide</button>*@
+</div>
 
 <p>
     @* The syntax for toggling modals is beyond terrible but what else do you expect from 
@@ -332,8 +348,6 @@
 </div>
 <script>
 
-
-    var players = @Html.Raw(Json.Serialize(Model.Players))
     var currId = -1;
     var pData = {};
         // need to generalize this ASAP, style of coding must be adopted early

@@ -2,3 +2,38 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+const hiddenNavWidth = 40;
+const expandedNavWidth = 160;
+function hideNav(nav) {
+    var navStr = '#' + nav;
+    //$('#' + nav).hide();
+    var navBar = $('#' + nav);
+
+    var closeBtn = $(navStr + ' .closebtn');
+    var expandBtn = $(navStr + ' .expandbtn');
+    var links = $(navStr + ' a')
+    console.log(closeBtn);
+    if (navBar.width() == expandedNavWidth) {
+        navBar.width(hiddenNavWidth);
+        navBar.height(57);
+        closeBtn.hide();
+        links.hide();
+        expandBtn.show();
+    }
+    else {
+        navBar.width(expandedNavWidth);
+        navBar.height('100%');
+        closeBtn.show();
+        links.show();
+        links.css('display', 'block')
+        // expandBtn.hide()
+    }
+    expandBtn.toggleClass("change")
+
+}
+
+//$(window).scroll(function () {
+//    var navBar = $('#left_sidenav');
+//    console.log(navBar.);
+
+//});

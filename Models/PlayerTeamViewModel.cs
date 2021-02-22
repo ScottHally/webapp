@@ -12,6 +12,7 @@ namespace WebApplication1.Models
     {
         public List<Player> Players { get; set; }
         public SelectList Teams { get; set; }
+        
         public string PlayerTeam { get; set; }
         public string SearchString { get; set; }
 

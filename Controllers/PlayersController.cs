@@ -29,14 +29,20 @@ namespace WebApplication1.Controllers
 
 
         // GET: Players
-        public async Task<IActionResult> Index(string playerTeam, string searchString)
+        public async Task<IActionResult> Index(int? id, string playerTeam, string searchString)
         {
 
             IQueryable<string> teamQuery = from p in _context.Player
                                            orderby p.Team
                                            select p.Team;
+            var league = from l in _context.League select l;
 
             var players = from p in _context.Player select p;
+
+            if(id != null)
+            {
+                players = players.Where(p => p.LeagueID == id);
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -52,7 +58,10 @@ namespace WebApplication1.Controllers
             {
                 Teams = new SelectList(await teamQuery.Distinct().ToListAsync()),
                 Players = await players.ToListAsync()
+                
             };
+
+            ViewData["Leagues"] = await league.ToListAsync();
 
 
 

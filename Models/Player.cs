@@ -35,5 +35,8 @@ namespace WebApplication1.Models
         [Required]
         public string Rating { get; set; }
 
+        public int LeagueID { get; set; }
+        public League League { get; set; }
+
     }
 }
