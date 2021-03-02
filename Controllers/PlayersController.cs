@@ -27,16 +27,48 @@ namespace WebApplication1.Controllers
             return "Hello... " + id + " " + player.Name;
         }
 
+        // (this GET comment below better not work...)
+        // update, obviously, it didnt, needed the HttpGet annotation
+        // (the GET api/[controller] is simply a stupid convention on MDN or whatever
+        // this is all that we need rn
+        // GET api/Players
+        [HttpGet("/api/players/")]
+        public IQueryable<PlayerDTO> GetPlayers()
+        {
+            // why is automatic indentation not a default thing in VS???
+            var players = from p in _context.Player
+                          select new PlayerDTO()
+                            {
+                                ID = p.Id,
+                                Name = p.Name,
+                                BirthDate = p.BirthDate,
+                                Team = p.Team,
+                                Salary = p.Salary,
+                                Rating = p.Rating,
+                                LeagueID = p.LeagueID
+                            };
+            return players;
+        }
+
 
         // GET: Players
-        public async Task<IActionResult> Index(string playerTeam, string searchString)
+        public async Task<IActionResult> Index(int? id, string playerTeam, string searchString)
         {
 
             IQueryable<string> teamQuery = from p in _context.Player
                                            orderby p.Team
                                            select p.Team;
+            var league = from l in _context.League select l;
 
             var players = from p in _context.Player select p;
+            League sLeague = null;
+
+            if(id != null)
+            {
+                players = players.Where(p => p.LeagueID == id);
+                sLeague = (League) league.Where(l => l.LeagueID == id).First();
+                //players = (IQueryable<Player>)sLeague.Players;
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -48,12 +80,17 @@ namespace WebApplication1.Controllers
                 players = players.Where(x => x.Team == playerTeam);
             }
 
+            teamQuery = from p in players orderby p.Team select p.Team;
+
             var playerTeamVM = new PlayerTeamViewModel
             {
                 Teams = new SelectList(await teamQuery.Distinct().ToListAsync()),
                 Players = await players.ToListAsync()
+                
             };
 
+            ViewData["Leagues"] = await league.ToListAsync();
+            ViewData["ID"] = id;
 
 
             return View(playerTeamVM);
@@ -88,7 +125,7 @@ namespace WebApplication1.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,BirthDate,Team,Salary,Rating")] Player player)
+        public async Task<IActionResult> Create([Bind("Id,Name,BirthDate,Team,Salary,Rating,LeagueID")] Player player)
         {
             if (ModelState.IsValid)
             {

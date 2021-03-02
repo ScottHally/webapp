@@ -1,0 +1,82 @@
+﻿@model League
+@{
+    ViewData["Title"] = "Leagues";
+    var leagues = ViewData["Leagues"] as List<League>;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>League List</h1>
+<p>
+    @* The syntax for toggling modals is beyond terrible but what else do you expect from
+        bootstrap? *@
+    <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal">Create New</button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sport)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in leagues)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sport)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Create New Player</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div id="playerNameCreate" class="form-group">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Sport" class="control-label"></label>
+                                <input asp-for="Sport" class="form-control" />
+                                <span asp-validation-for="Sport" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
