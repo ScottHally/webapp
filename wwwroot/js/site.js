@@ -32,6 +32,18 @@ function hideNav(nav) {
 
 }
 
+// ajax helper function!!! why didn't i ever think of this?!
+function ajaxHelper(uri, method, data) {
+   console.log('ENTERING AJAX HELPER METHOD')
+    return $.ajax({
+        type: method,
+        url: uri,
+        data: data // you NEVER need to stringify nor use JSON
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        self.error(errorThrown);
+    });
+}
+
 //$(window).scroll(function () {
 //    var navBar = $('#left_sidenav');
 //    console.log(navBar.);

@@ -6,6 +6,8 @@
     var leagues = ViewData["Leagues"] as List<League>;
     int index = 0;
 
+    // barf
+    var routeID = ViewData["ID"];
 }
 
 
@@ -29,7 +31,7 @@
 <p>
     @* The syntax for toggling modals is beyond terrible but what else do you expect from 
         bootstrap? *@
-    <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal">Create New</button>
+    <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal" onclick="fillPlayerLeagueID(@routeID)">Create New</button>
 </p>
 @*the tutorial wanted us to do this... why make a seperate model for
 *@
@@ -87,9 +89,9 @@
                 </td>
                 <td>
                     <form>
-                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id,'')">Edit</button> |
-                        <button type="button" class="btn-primary btn" data-toggle="modal" data-target="#detailsModal" asp-route-id="@item.Id" onclick="getItemIndex(@index, '')">Details</button> |
-                        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn-primary btn" asp-route-id="@item.Id" onclick="fillDelPid(@item.Id)">Delete</button>
+                        <button type="button" data-toggle="modal" data-target="#exampleModal" class="edit btn-primary btn" asp-route-id="10" onclick="getPlayerData(@item.Id,'')" disabled>Edit</button> |
+                        <button type="button" class="edit btn-primary btn" data-toggle="modal" data-target="#detailsModal" asp-route-id="@item.Id" onclick="getItemIndex(@item.Id, '')" disabled>Details</button> |
+                        <button type="button" data-toggle="modal" data-target="#deleteModal" class="edit btn-primary btn" asp-route-id="@item.Id" onclick="fillDelPid(@item.Id)" disabled>Delete</button>
                     </form>
                     @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -121,6 +123,7 @@
                         <div class="col-md-6">
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input id="playerLeagueID" type="hidden" asp-for="Player.LeagueID" />
                             <div id="playerNameCreate" class="form-group">
                                 <label asp-for="Player.Name" class="control-label"></label>
                                 <input asp-for="Player.Name" class="form-control" />
@@ -346,14 +349,23 @@
         </div>
     </div>
 </div>
+
 <script>
 
     var currId = -1;
     var pData = {};
+    var players = [];
+    window.onload = function () {
+        getAllPlayers();
+    }
+    
+        // code smell?
+
         // need to generalize this ASAP, style of coding must be adopted early
         // how are you gonna handle another field being added? keep growing the method? not a great workflow
-        function getPlayerData(id,su) {
-            console.log(id)
+    function getPlayerData(id, su) {
+        
+      
             var player = players.find(x => x.id == id)
             
             console.log(player)
@@ -398,22 +410,23 @@
         console.log('delete id : ' + id);
 
         var index = players.findIndex(x => x.id == id);
-        getItemIndex(index, 'Delete');
+        getItemIndex(id, 'Delete');
     }
 
     function getItemIndex(id, form) {
         @{
             index = 0;
         }
+        var player = players.find(x => x.id == id);
         var formStr = "#detailsForm" + form;
         var detailsForm = $(formStr);
         var detailsDD = $(formStr + ' > dd');
         console.log("name of form: " + formStr);
-        detailsDD[0].innerHTML = players[id].name;
-        detailsDD[1].innerHTML = players[id].rating;
-        detailsDD[2].innerHTML = players[id].birthDate.slice(0,10);
-        detailsDD[3].innerHTML = players[id].team;
-        detailsDD[4].innerHTML = players[id].salary;
+        detailsDD[0].innerHTML = player.name;
+        detailsDD[1].innerHTML = player.rating;
+        detailsDD[2].innerHTML = player.birthDate.slice(0,10);
+        detailsDD[3].innerHTML = player.team;
+        detailsDD[4].innerHTML = player.salary;
         //detailsDD[5].innerHTML = players[id].name;
 
 
@@ -455,5 +468,25 @@
         })
 
         return false;
+    }
+
+    function fillPlayerLeagueID(id) {
+        var idField = $('#playerLeagueID');
+        idField.val(id);
+        console.log("leagueID: " + id);
+    }
+
+    var playersUri = '/api/players/'
+    function getAllPlayers(callback) {
+
+        // this is the most frustrating interface i have ever used
+        ajaxHelper(playersUri, 'GET').done(cb);
+    }
+
+    // will this always guarantee players is filled?
+    // no!
+    function cb(data) {
+        players = data;
+        $('.edit').prop('disabled', false);
     }
 </script>
