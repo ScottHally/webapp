@@ -1,23 +1,36 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var leagues = ViewData["Leagues"] as List<League>;
 }
 
 
 <div class="sidenav" id="left_sidenav">
     <a class="expandbtn" onclick="hideNav('left_sidenav')">&#9776;</a>
     <a class="closebtn" href="javascript:void(0)" onclick="hideNav('left_sidenav')">&#10005;</a>
-    <a href="javascript:void(0)">Nuts</a>
-    <a href="javascript:void(0)">Bits</a>
-    <a href="javascript:void(0)">Bobs</a>
-    <a href="javascript:void(0)">Things</a>
+    @foreach (var item in leagues)
+    {
+        <a asp-controller="Players" asp-action="Index" asp-route-id="@item.LeagueID">
+            @Html.DisplayFor(modelItem => item.Name)
+        </a>
+    }
+    @*<a asp-controller="Players" asp-action="Index" asp-route-id="1">NHL</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="2">NBA</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="3">MLB</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="4">NFL</a>*@
     @*<button class="btn btn-primary" onclick="hideNav('left_sidenav')">Test Hide</button>*@
 </div>
 
 <div class="main text-center">
 
-    <h1 class="display-4">Welcome tool</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    
+    <h1 class="display-4">Welcome</h1>
+    <p>To get started, click on "Players" above. Or, select a League from the side bar to the left.<p>
+    <p>"Home" takes you here, and "Leagues" shows you the existing leagues in the database.</p>
+    <p>The default league shown when clicking "Players" is NHL</p>
+    <br />
+    <br />
+    <br />
+
+    <p>This application is for demonstrative purposes only. While the practices and methods within this app are valid, the user interface and presentation are works in progress, and not necessarily the scope of this project.</p>
 </div>
 
 @*<div class="sidenav-right" id="right_sidenav">

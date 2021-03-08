@@ -6,20 +6,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models;
-
+using WebApplication1.Data;
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly WebApplication1Context _context;
+        public HomeController(ILogger<HomeController> logger, WebApplication1Context context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
+            ViewData["Leagues"] = _context.League.ToList();
             return View();
         }
 

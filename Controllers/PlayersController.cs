@@ -27,10 +27,7 @@ namespace WebApplication1.Controllers
             return "Hello... " + id + " " + player.Name;
         }
 
-        // (this GET comment below better not work...)
-        // update, obviously, it didnt, needed the HttpGet annotation
-        // (the GET api/[controller] is simply a stupid convention on MDN or whatever
-        // this is all that we need rn
+      
         // GET api/Players
         [HttpGet("/api/players/")]
         public IQueryable<PlayerDTO> GetPlayers()
@@ -67,7 +64,11 @@ namespace WebApplication1.Controllers
             {
                 players = players.Where(p => p.LeagueID == id);
                 sLeague = (League) league.Where(l => l.LeagueID == id).First();
-                //players = (IQueryable<Player>)sLeague.Players;
+            }
+            else
+            {
+                id = league.Where(l => l.Name == "NHL").First().LeagueID;
+                return RedirectToAction(nameof(Index), new { id = id });
             }
 
             if (!String.IsNullOrEmpty(searchString))
@@ -131,11 +132,13 @@ namespace WebApplication1.Controllers
             {
                 _context.Add(player);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id = player.LeagueID });
             }
             return View(player);
         }
 
+
+        // no longer used
         // GET: Players/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -204,6 +207,8 @@ namespace WebApplication1.Controllers
             //return RedirectToAction(nameof(Index));
         }
 
+
+        // no longer used
         [HttpPost]
         public async Task<IActionResult> SubmitEdit(int id, Player player)
         {

@@ -5,10 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="sidenav" id="left_sidenav">
+    <a class="expandbtn" onclick="hideNav('left_sidenav')">&#9776;</a>
+    <a class="closebtn" href="javascript:void(0)" onclick="hideNav('left_sidenav')">&#10005;</a>
+    @foreach (var item in leagues)
+    {
+        <a asp-controller="Players" asp-action="Index" asp-route-id="@item.LeagueID">
+            @Html.DisplayFor(modelItem => item.Name)
+        </a>
+    }
+    @*<a asp-controller="Players" asp-action="Index" asp-route-id="1">NHL</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="2">NBA</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="3">MLB</a>
+        <a asp-controller="Players" asp-action="Index" asp-route-id="4">NFL</a>*@
+    @*<button class="btn btn-primary" onclick="hideNav('left_sidenav')">Test Hide</button>*@
+</div>
+
 <h1>League List</h1>
 <p>
-    @* The syntax for toggling modals is beyond terrible but what else do you expect from
-        bootstrap? *@
+    @* The syntax for toggling modals is weird *@
     <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal">Create New</button>
 </p>
 <table class="table">

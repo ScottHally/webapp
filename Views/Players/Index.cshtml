@@ -29,12 +29,9 @@
 </div>
 
 <p>
-    @* The syntax for toggling modals is beyond terrible but what else do you expect from 
-        bootstrap? *@
+    @* The syntax for toggling modals is so weird *@
     <button type="button" class="btn btn-primary" data-target="#createModal" data-toggle="modal" onclick="fillPlayerLeagueID(@routeID)">Create New</button>
 </p>
-@*the tutorial wanted us to do this... why make a seperate model for
-*@
 <form asp-controller="Players" asp-action="Index" method="get">
     <p>
         <select asp-for="PlayerTeam" asp-items="Model.Teams">
@@ -240,7 +237,6 @@
                 <div class="row">
                     <div>
                         <div>
-                            
                             <div class="container">
                                 <dl id="detailsForm" class="row">
                                     <div>
@@ -355,7 +351,8 @@
     var currId = -1;
     var pData = {};
     var players = [];
-    window.onload = function () {
+    window.onload = function ()
+    {
         getAllPlayers();
     }
     
@@ -363,75 +360,63 @@
 
         // need to generalize this ASAP, style of coding must be adopted early
         // how are you gonna handle another field being added? keep growing the method? not a great workflow
-    function getPlayerData(id, su) {
-        
-      
-            var player = players.find(x => x.id == id)
-            
-            console.log(player)
-            var playerID = $("#playerID" + su)
-            var playerLabel = $("#playerName" + su +" > label")
-            var playerName = $('#playerName' + su + ' > input')
-            var fRating = $('#playerRating' + su + ' > input')
-            var fBday = $('#playerbday' + su + ' > input')
-            var fteam = $('#playerteam' + su + ' > input')
-            var fSalary = $('#playerSalary' + su + ' > input')
+    // su isnt used anymore
+    function getPlayerData(id, su)
+    {
+        var player = players.find(x => x.id == id);
+        var playerID = $("#playerID" + su);
+        var playerLabel = $("#playerName" + su + " > label");
+        var playerName = $('#playerName' + su + ' > input');
+        var fRating = $('#playerRating' + su + ' > input');
+        var fBday = $('#playerbday' + su + ' > input');
+        var fteam = $('#playerteam' + su + ' > input');
+        var fSalary = $('#playerSalary' + su + ' > input');
 
-            var playerRating = player.rating;
-            var playerBday = new Date(player.birthDate)
-            var playerTeam = player.team
-            var playerSalary = player.salary
-            var bdaystring = playerBday.toISOString().slice(0,10)
+        var playerRating = player.rating;
+        var playerBday = new Date(player.birthDate);
+        var playerTeam = player.team;
+        var playerSalary = player.salary;
+        var bdaystring = playerBday.toISOString().slice(0, 10);
 
 
-            playerID.val(id)
-            playerName.val(player.name)
-            fRating.val(playerRating)
-            fBday.val(bdaystring)
-            console.log(bdaystring)
-            fteam.val(playerTeam)
-            fSalary.val(playerSalary)
+        playerID.val(id);
+        playerName.val(player.name);
+        fRating.val(playerRating);
+        fBday.val(bdaystring);
+        fteam.val(playerTeam);
+        fSalary.val(playerSalary);
 
-            //pData.id = id;
-            //pData.name = player.name;
-            //pData.Rating = playerRating;
-            //pData.birthDate = bdaystring;
-            //pData.team = playerTeam;
-            //pData.salary = playerSalary;
-
-            console.log(pData)
-            currId = id;
+        currId = id;
     }
 
-    function fillDelPid(id) {
+    // fills the player data when entering the delete modal, through
+    // a call to getItemIndex
+    function fillDelPid(id)
+    {
         var fDelPid = $("#delPlayerId");
 
         fDelPid.val(id);
-        console.log('delete id : ' + id);
-
-        var index = players.findIndex(x => x.id == id);
         getItemIndex(id, 'Delete');
     }
 
-    function getItemIndex(id, form) {
-        @{
-            index = 0;
-        }
+    // takes a database id (passed from html, or a preceding method)
+    // and attaches the data associated with the id to a form using
+    // dd / dt tags
+
+    function getItemIndex(id, form)
+    {
         var player = players.find(x => x.id == id);
         var formStr = "#detailsForm" + form;
-        var detailsForm = $(formStr);
         var detailsDD = $(formStr + ' > dd');
-        console.log("name of form: " + formStr);
         detailsDD[0].innerHTML = player.name;
         detailsDD[1].innerHTML = player.rating;
         detailsDD[2].innerHTML = player.birthDate.slice(0,10);
         detailsDD[3].innerHTML = player.team;
         detailsDD[4].innerHTML = player.salary;
-        //detailsDD[5].innerHTML = players[id].name;
-
-
-        console.log(id);
     }
+
+    // unused 
+    // DELETE WHEN CLEANING UP
 
     function getEditData(id) {
         var playerName = $('#playerName > input')
@@ -448,6 +433,7 @@
 
     }
 
+    // UNUSED DELETE
     function submitEdit() {
 
         getEditData(currId)
@@ -470,21 +456,33 @@
         return false;
     }
 
-    function fillPlayerLeagueID(id) {
+
+    // fills the LeagueID input field (hidden) in the create
+    // view to the current operating ID (default is NHL's id)
+    function fillPlayerLeagueID(id)
+    {
         var idField = $('#playerLeagueID');
         idField.val(id);
-        console.log("leagueID: " + id);
     }
 
-    var playersUri = '/api/players/'
+    // snippet i got this from calls them 'URIs' -- archaic
+    var playersUri = '/api/players/'; // call them URLs, not uri
+
+
+    // calls the ajaxhelper method with GET method, accepts a call back
+    // parameter but doesn't do anything -- edit out later
     function getAllPlayers(callback) {
 
         // this is the most frustrating interface i have ever used
         ajaxHelper(playersUri, 'GET').done(cb);
     }
 
-    // will this always guarantee players is filled?
-    // no!
+    // With ajax, we can't guarantee the players object will be filled
+    // by the time the page loads, so disabling the edit buttons kind of
+    // works around that
+
+    // callback for the ajax helper method (see jQuery done() method docs)
+    // this calls after the ajax succeeds
     function cb(data) {
         players = data;
         $('.edit').prop('disabled', false);
